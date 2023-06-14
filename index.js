@@ -20,6 +20,11 @@ app.use("/api/auth", auth);
 app.use("/api/collection", collection);
 app.use("/api/flashcard", flashcard);
 
+app.get("/", (req, res) => {
+    res.json({
+        message: "welcome to flashcard",
+    });
+});
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on ${process.env.PORT}`);
 });
