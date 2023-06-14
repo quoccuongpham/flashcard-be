@@ -13,19 +13,12 @@ app.use(bodyParser.json());
 // FILE IMPORT
 const auth = require("./src/routes/auth");
 const collection = require("./src/routes/collection");
+const flashcard = require("./src/routes/flashcard");
 
 // ROUTE
 app.use("/api/auth", auth);
 app.use("/api/collection", collection);
-
-app.get("/", async (req, res) => {
-    try {
-        const account = await db.Account.findAll();
-        return res.json(account);
-    } catch (error) {
-        console.error("Unable to connect to the database:", error);
-    }
-});
+app.use("/api/flashcard", flashcard);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on ${process.env.PORT}`);

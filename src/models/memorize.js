@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Memorize.belongsTo(models.Flashcard);
+            Memorize.belongsTo(models.Flashcard, {
+                foreignKey: "flashcard_id",
+            });
         }
     }
     Memorize.init(

@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Flashcard.belongsTo(models.Collection);
+            Flashcard.belongsTo(models.Collection, {
+                foreignKey: "collection_id",
+            });
             Flashcard.hasOne(models.Memorize, { foreignKey: "flashcard_id" });
         }
     }
@@ -23,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             collection_id: DataTypes.INTEGER,
             word: DataTypes.STRING,
             word_type: DataTypes.STRING,
-            pronuciation: DataTypes.STRING,
+            pronunciation: DataTypes.STRING,
             mean: DataTypes.STRING,
             example: DataTypes.TEXT,
         },

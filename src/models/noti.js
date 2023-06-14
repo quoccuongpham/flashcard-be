@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Noti.belongsTo(models.Account);
+            Noti.belongsTo(models.Account, {
+                foreignKey: "user_id",
+            });
         }
     }
     Noti.init(
