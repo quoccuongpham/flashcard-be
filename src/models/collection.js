@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            Collection.belongsTo(models.Account);
+            Collection.belongsTo(models.Account, {
+                foreignKey: "user_id",
+            });
             Collection.hasMany(models.Flashcard, {
                 foreignKey: "collection_id",
             });

@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const db = require("../models");
 
 const verifyToken = require("../middleware/verifyToken");
-// REGISTER
+
+//* REGISTER
+//?api: /api/auth/register
 router.post("/register", async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -64,7 +66,8 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// LOGIN
+//* LOGIN
+//?api: /api/auth/login
 router.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -121,8 +124,20 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// TEST
-router.get("/verify", verifyToken, (req, res) => {
-    res.json("success");
+//* VERIFY USER
+//?api: /api/auth
+router.get("/", verifyToken, async (req, res) => {
+    try {
+        const user_id = req.user_id;
+        res.json({
+            success: true,
+            user_id,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal error",
+        });
+    }
 });
 module.exports = router;

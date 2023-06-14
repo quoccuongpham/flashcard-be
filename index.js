@@ -12,9 +12,11 @@ app.use(bodyParser.json());
 
 // FILE IMPORT
 const auth = require("./src/routes/auth");
+const collection = require("./src/routes/collection");
 
 // ROUTE
 app.use("/api/auth", auth);
+app.use("/api/collection", collection);
 
 app.get("/", async (req, res) => {
     try {
