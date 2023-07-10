@@ -20,16 +20,28 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
             },
-            ease: DataTypes.FLOAT,
-            timeout_interval: DataTypes.DATE,
-            state: DataTypes.STRING,
-            last_evaluate: DataTypes.STRING,
+            ease: {
+                type: DataTypes.FLOAT,
+                defaultValue: 2.5,
+            },
+            timeout_interval: {
+                type: DataTypes.DATE,
+            },
+            state: {
+                type: DataTypes.STRING,
+                defaultValue: "L",
+            },
+            last_evaluate: {
+                type: DataTypes.STRING,
+                defaultValue: "hard",
+            },
         },
         {
             sequelize,
             modelName: "Memorize",
             tableName: "Memorize",
-            updatedAt: false,
+            updatedAt: "timeout_interval",
+            createdAt: "timeout_interval",
         }
     );
     return Memorize;

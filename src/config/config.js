@@ -21,5 +21,7 @@ module.exports = {
         database: process.env.PRODUCT_DB_NAME,
         host: process.env.PRODUCT_DB_HOST,
         dialect: "postgres",
+        // logging: false,
+        timezone: "+07:00",
     },
 };
