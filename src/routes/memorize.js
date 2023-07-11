@@ -61,11 +61,9 @@ router.post("/", verifyToken, verifyCollection, async (req, res) => {
             },
         });
         if (memorize_fc.dataValues.state == "L") {
-            await Learning(memorize_fc, flashcard_id, value);
-            console.log("learning");
+            Learning(memorize_fc, flashcard_id, value);
         } else {
             Graduate(memorize_fc.dataValues, flashcard_id, value);
-            console.log("Graduate");
         }
         return res.json({
             success: true,

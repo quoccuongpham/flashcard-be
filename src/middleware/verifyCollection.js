@@ -3,6 +3,7 @@ const db = require("../models/index");
 const verifyCollection = async (req, res, next) => {
     const user_id = req.user_id;
     const { collection_id } = req.body;
+
     const collections = await db.Collection.findAll({
         where: {
             user_id: user_id,
