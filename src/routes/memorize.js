@@ -5,7 +5,9 @@ const db = require("../models/index");
 
 const verifyToken = require("../middleware/verifyToken");
 const verifyCollectionParam = require("../middleware/verifyCollectionParam");
-
+const verifyCollection = require("../middleware/verifyCollection");
+const Learning = require("../algorithm/Learning");
+const Graduate = require("../algorithm/Graduate");
 // get memorize for all flashcard of a collection
 router.get(
     "/:collection_id",
@@ -50,51 +52,34 @@ router.get(
 );
 
 // update memorize
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", verifyToken, verifyCollection, async (req, res) => {
     const { flashcard_id, value } = req.body;
-    const user_id = req.user_id;
-    // const result = await db.Memorize.create({
-    //     flashcard_id: flashcard_id,
-    // });
-    // await db.Memorize.update(
-    //     { last_evaluate: "good" },
-    //     {
-    //         where: {
-    //             flashcard_id: 3,
-    //         },
-    //     }
-    // );
-    // res.json({
-    //     success: true,
-    // });
-
-    // try {
-    //     const sql =
-    //         "SELECT * FROM MEMORIZE WHERE USER_ID = ? AND COLLECTION_ID = ? AND FLASHCARD_ID = ?";
-    //     const [rows] = await con.execute(sql, [
-    //         userID,
-    //         collectionID,
-    //         flashcardID,
-    //     ]);
-    //     const { state } = rows[0];
-    //     if (state == "L") {
-    //         Learing(value, con, rows[0]);
-    //     } else {
-    //         Graduate(value, con, rows[0]);
-    //     }
-    //     return res.json({
-    //         success: true,
-    //         message: "evaluate successfully",
-    //     });
-    // } catch (error) {
-    //     if (error) {
-    //         throw error;
-    //     }
-    //     return res.json({
-    //         success: false,
-    //         message: "server error",
-    //     });
-    // }
+    try {
+        const memorize_fc = await db.sequelize.model("Memorize").findOne({
+            where: {
+                flashcard_id: flashcard_id,
+            },
+        });
+        if (memorize_fc.dataValues.state == "L") {
+            await Learning(memorize_fc, flashcard_id, value);
+            console.log("learning");
+        } else {
+            Graduate(memorize_fc.dataValues, flashcard_id, value);
+            console.log("Graduate");
+        }
+        return res.json({
+            success: true,
+            message: "evaluate successfully",
+        });
+    } catch (error) {
+        if (error) {
+            throw error;
+        }
+        return res.json({
+            success: false,
+            message: "server error",
+        });
+    }
 });
 
 module.exports = router;

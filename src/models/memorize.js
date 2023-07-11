@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: "Memorize",
             tableName: "Memorize",
-            updatedAt: "timeout_interval",
+            updatedAt: true,
             createdAt: "timeout_interval",
         }
     );

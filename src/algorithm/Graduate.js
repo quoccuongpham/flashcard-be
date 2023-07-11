@@ -1,66 +1,49 @@
+const db = require("../models/index");
 const FormatTime = require("../utils/FormatTime");
 
-const Graduate = async (value, connection, flashcard) => {
-    let new_flashcard = { ...flashcard };
-
+const Graduate = async (memorize, flashcard_id, value) => {
     const timeout_interval = new Date();
-    const old_interval =
-        new_flashcard.timeout_interval - new_flashcard.last_visit;
+    const old_interval = memorize.timeout_interval - memorize.updatedAt;
 
     let new_interval = 0;
     switch (value) {
         case "easy":
-            new_interval = old_interval * flashcard.ease * 1.3;
+            new_interval = old_interval * memorize.ease * 1.3;
             timeout_interval.setMilliseconds(
                 timeout_interval.getMilliseconds() + new_interval
             );
-            new_flashcard.timeout_interval = FormatTime(timeout_interval);
-            new_flashcard.last_visit = FormatTime(new Date());
-            new_flashcard.last_evaluate = "easy";
+            memorize.timeout_interval = FormatTime(timeout_interval);
+            memorize.last_evaluate = "easy";
             break;
         case "hard":
-            if (new_flashcard.ease > 1.45) {
-                new_flashcard.ease -= 0.15;
+            if (memorize.ease > 1.45) {
+                memorize.ease -= 0.15;
             } else {
-                new_flashcard.ease = 1.3;
+                memorize.ease = 1.3;
             }
-            new_interval = old_interval * new_flashcard.ease;
+            new_interval = old_interval * memorize.ease;
             timeout_interval.setMilliseconds(
                 timeout_interval.getMilliseconds() + new_interval
             );
-            new_flashcard.timeout_interval = FormatTime(timeout_interval);
-            new_flashcard.last_visit = FormatTime(new Date());
-            new_flashcard.last_evaluate = "hard";
+            memorize.timeout_interval = FormatTime(timeout_interval);
+            memorize.last_evaluate = "hard";
             break;
         case "again":
-            new_flashcard.state = "L";
+            memorize.state = "L";
             timeout_interval.setMinutes(timeout_interval.getMinutes() + 10);
-            new_flashcard.timeout_interval = FormatTime(timeout_interval);
-            new_flashcard.last_visit = FormatTime(new Date());
-            new_flashcard.last_evaluate = "again";
+            memorize.timeout_interval = FormatTime(timeout_interval);
+            memorize.last_evaluate = "again";
             break;
         default:
             break;
     }
-    console.log(new_flashcard);
+    console.log(memorize);
     //todo: Update database
-    try {
-        await connection.execute(
-            "UPDATE MEMORIZE SET EASE = ?,TIMEOUT_INTERVAL=? ,LAST_VISIT = ?,STATE = ?, LAST_EVALUATE = ? WHERE FLASHCARD_ID = ? AND COLLECTION_ID = ? AND USER_ID = ? ",
-            [
-                new_flashcard.ease,
-                new_flashcard.timeout_interval,
-                new_flashcard.last_visit,
-                new_flashcard.state,
-                new_flashcard.last_evaluate,
-                new_flashcard.flashcard_id,
-                new_flashcard.collection_id,
-                new_flashcard.user_id,
-            ]
-        );
-    } catch (error) {
-        if (error) throw error;
-    }
+    await db.sequelize.model("Memorize").update(memorize, {
+        where: {
+            flashcard_id: flashcard_id,
+        },
+    });
 };
 
 module.exports = Graduate;
