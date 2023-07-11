@@ -3,6 +3,7 @@ const router = express.Router();
 const { Op } = require("sequelize");
 const db = require("../models/index");
 const verifyToken = require("../middleware/verifyToken");
+const verifyCollection = require("../middleware/verifyCollection");
 
 //* Get collections
 //?api: /api/collection
@@ -70,9 +71,8 @@ router.post("/", verifyToken, async (req, res) => {
 
 //* Delete collection
 //?api: /api/collection
-router.delete("/", verifyToken, async (req, res) => {
+router.delete("/", verifyToken, verifyCollection, async (req, res) => {
     try {
-        const user_id = req.user_id;
         const { collection_id } = req.body;
         const flashcards = await db.Flashcard.findAll({
             attributes: ["id"],
@@ -84,30 +84,58 @@ router.delete("/", verifyToken, async (req, res) => {
             (flashcard) => flashcard.dataValues.id
         );
 
-        const test = await db.Flashcard.findAll({
+        // delete memorize of collection
+        await db.sequelize.model("Memorize").destroy({
             where: {
-                id: {
+                flashcard_id: {
                     [Op.in]: flashcards_rs,
                 },
             },
         });
-        console.log(test);
-        // delete memorize of collection
-
         // delete all flashcard of collection
-
-        // const result = await db.Collection.destroy({
-        //     where: {
-        //         user_id: user_id,
-        //         id: collection_id,
-        //     },
-        // });
+        await db.sequelize.model("Flashcard").destroy({
+            where: {
+                collection_id: collection_id,
+            },
+        });
+        // delete collection
+        await db.sequelize.model("Collection").destroy({
+            where: {
+                id: collection_id,
+            },
+        });
         return res.json({
             success: true,
-            message: "Create collection successfully",
+            message: "Delete collection successfully",
         });
     } catch (error) {
-        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal error!",
+        });
+    }
+});
+
+//* update collection
+router.put("/", verifyToken, verifyCollection, async (req, res) => {
+    const { collection_id, collection_name, collection_des } = req.body;
+    try {
+        await db.sequelize.model("Collection").update(
+            {
+                name: collection_name,
+                description: collection_des,
+            },
+            {
+                where: {
+                    id: collection_id,
+                },
+            }
+        );
+        return res.json({
+            success: true,
+            message: "Update collection successfully",
+        });
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Internal error!",

@@ -31,8 +31,9 @@ router.get(
                 },
             },
         });
+
         //? Logic xu ly
-        const flashcard_learn = memorizes.map((memo, index) => {
+        const flashcard_learn = memorizes.map((memo) => {
             if (memo.timeout_interval < current_time) {
                 return memo.dataValues.flashcard_id;
             }
@@ -41,30 +42,10 @@ router.get(
         const flashcard_info = flashcards.filter((fc) => {
             return flashcard_learn.includes(fc.dataValues.id);
         });
-        res.json({ flashcard_info });
-
-        // return res.json({
-        //     success: true,
-        //     flashcards,
-        // });
-        // const sql =
-        //     "SELECT * FROM MEMORIZE WHERE USER_ID = ? AND COLLECTION_ID = ?";
-        // const sql2 = "SELECT * FROM FLASHCARDS WHERE COLLECTION_ID = ?";
-        // const [rows] = await con.execute(sql, [user_id, collection_id]);
-        // const [rows_2] = await con.execute(sql2, [collection_id]);
-        // let flashcardsID = rows.filter((flashcard) => {
-        //     return flashcard.timeout_interval < current_time;
-        // });
-        // flashcardsID = flashcardsID.map((flashcard) => {
-        //     return flashcard.flashcard_id;
-        // });
-        // let flashcardsInfo = rows_2.filter((flashcardInfo) => {
-        //     return flashcardsID.includes(flashcardInfo.id);
-        // });
-        // return res.json({
-        //     success: true,
-        //     data: flashcardsInfo,
-        // });
+        return res.json({
+            success: true,
+            flashcard_info,
+        });
     }
 );
 
