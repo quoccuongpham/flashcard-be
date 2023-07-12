@@ -71,6 +71,8 @@ router.post("/", verifyToken, async (req, res) => {
 
 //* Delete collection
 //?api: /api/collection
+//?paramater: collection_id
+
 router.delete("/", verifyToken, verifyCollection, async (req, res) => {
     try {
         const { collection_id } = req.body;
