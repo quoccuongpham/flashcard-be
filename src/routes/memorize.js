@@ -8,6 +8,7 @@ const verifyCollectionParam = require("../middleware/verifyCollectionParam");
 const verifyCollection = require("../middleware/verifyCollection");
 const Learning = require("../algorithm/Learning");
 const Graduate = require("../algorithm/Graduate");
+
 // get memorize for all flashcard of a collection
 router.get(
     "/:collection_id",
@@ -36,7 +37,8 @@ router.get(
 
         //? Logic xu ly
         const flashcard_learn = memorizes.map((memo) => {
-            if (memo.timeout_interval < current_time) {
+            const timeout_interval = new Date(memo.timeout_interval);
+            if (timeout_interval < current_time) {
                 return memo.dataValues.flashcard_id;
             }
         });
