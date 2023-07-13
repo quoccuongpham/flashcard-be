@@ -16,6 +16,7 @@ router.get(
     verifyCollectionParam,
     async (req, res) => {
         const current_time = new Date();
+        console.log(current_time);
         const collection_id = req.params.collection_id;
 
         const flashcards = await db.sequelize.model("Flashcard").findAll({
