@@ -38,7 +38,7 @@ router.get(
 
         //? Logic xu ly
         const flashcard_learn = memorizes.map((memo) => {
-            const timeout_interval = new Date(memo.timeout_interval);
+            const timeout_interval = new Date(memo.dataValues.timeout_interval);
             if (timeout_interval < current_time) {
                 return memo.dataValues.flashcard_id;
             }
