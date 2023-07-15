@@ -16,7 +16,6 @@ router.get(
     verifyCollectionParam,
     async (req, res) => {
         const current_time = new Date();
-        console.log(current_time);
         const collection_id = req.params.collection_id;
 
         const flashcards = await db.sequelize.model("Flashcard").findAll({
@@ -39,7 +38,9 @@ router.get(
         //? Logic xu ly
         const flashcard_learn = memorizes.map((memo) => {
             const timeout_interval = new Date(memo.dataValues.timeout_interval);
+            console.log(`${memo.flashcard_id}: ${timeout_interval}`);
             if (timeout_interval < current_time) {
+                console.log("true");
                 return memo.dataValues.flashcard_id;
             }
         });

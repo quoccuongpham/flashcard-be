@@ -15,7 +15,7 @@ const verifyCollection = async (req, res, next) => {
     if (check_user_collection) {
         next();
     } else {
-        return res.json({
+        return res.status(400).json({
             success: false,
         });
     }
