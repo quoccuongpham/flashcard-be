@@ -38,13 +38,11 @@ router.get(
         //? Logic xu ly
         const flashcard_learn = memorizes.map((memo) => {
             const timeout_interval = new Date(memo.dataValues.timeout_interval);
-            console.log(`${memo.flashcard_id}: ${timeout_interval}`);
             if (timeout_interval < current_time) {
-                console.log("true");
                 return memo.dataValues.flashcard_id;
             }
         });
-
+        console.log(current_time);
         const flashcard_info = flashcards.filter((fc) => {
             return flashcard_learn.includes(fc.dataValues.id);
         });
