@@ -15,7 +15,9 @@ router.get(
     verifyToken,
     verifyCollectionParam,
     async (req, res) => {
-        const current_time = new Date();
+        const current_time = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Bangkok",
+        });
         const collection_id = req.params.collection_id;
 
         const flashcards = await db.sequelize.model("Flashcard").findAll({
@@ -37,12 +39,13 @@ router.get(
 
         //? Logic xu ly
         const flashcard_learn = memorizes.map((memo) => {
-            const timeout_interval = new Date(memo.dataValues.timeout_interval);
+            const timeout_interval = new Date(
+                memo.dataValues.timeout_interval
+            ).toLocaleString("en-US", { timeZone: "Asia/Bangkok" });
             if (timeout_interval < current_time) {
                 return memo.dataValues.flashcard_id;
             }
         });
-        console.log(current_time);
         const flashcard_info = flashcards.filter((fc) => {
             return flashcard_learn.includes(fc.dataValues.id);
         });
